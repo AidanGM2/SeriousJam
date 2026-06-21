@@ -13,6 +13,9 @@ public class PlayerController : MonoBehaviour
     //grab variables
     [SerializeField] private float grappleLength;
     [SerializeField] private LayerMask grappleLayer;
+    [SerializeField] private GameObject grabPoint;
+    private GameObject grabbedObject;
+
 
     private Vector3 grapplePoint;
     private DistanceJoint2D joint;
@@ -56,17 +59,32 @@ public class PlayerController : MonoBehaviour
 
             if(hit.collider != null)
             {
+                //pulls the player to the enemy
                 grapplePoint = hit.point;
                 grapplePoint.z = 0;
                 joint.connectedAnchor = grapplePoint;
                 joint.enabled = true;
                 joint.distance = grappleLength;
+                grabbedObject = hit.collider.gameObject;
+                //"grabbing" the enemy
+                if (grabPoint.GetComponent<Collider2D>().IsTouching(grabbedObject.GetComponent<Collider2D>()))
+                {
+                    Debug.Log("Object has been grabbed");
+                    grabbedObject.GetComponent<Rigidbody2D>().isKinematic = true;
+                    grabbedObject.transform.position = grabPoint.transform.position;
+                    grabbedObject.transform.SetParent(transform);
+                    //this should disable the grapple so the player isn't anchored
+                    joint.enabled = false;
+                }
             }
         }
-
-        if (Input.GetMouseButtonUp(0))
+        
+            //"let go" of grabbed enemy
+        if (Input.GetMouseButtonDown(1))
         {
-            joint.enabled = false;
+            grabbedObject.GetComponent<Rigidbody2D>().isKinematic = false;
+            grabbedObject.transform.SetParent(null);
+            grabbedObject = null;
         }
     }
 
