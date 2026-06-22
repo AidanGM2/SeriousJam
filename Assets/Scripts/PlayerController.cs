@@ -66,8 +66,10 @@ public class PlayerController : MonoBehaviour
                 joint.enabled = true;
                 joint.distance = grappleLength;
                 grabbedObject = hit.collider.gameObject;
-                //"grabbing" the enemy
-                if (grabPoint.GetComponent<Collider2D>().IsTouching(grabbedObject.GetComponent<Collider2D>()))
+            }
+        }
+        //"grabbing" the enemy
+        if (grabbedObject != null && grabPoint.GetComponent<Collider2D>().IsTouching(grabbedObject.GetComponent<Collider2D>()))
                 {
                     Debug.Log("Object has been grabbed");
                     grabbedObject.GetComponent<Rigidbody2D>().isKinematic = true;
@@ -76,8 +78,6 @@ public class PlayerController : MonoBehaviour
                     //this should disable the grapple so the player isn't anchored
                     joint.enabled = false;
                 }
-            }
-        }
         
             //"let go" of grabbed enemy
         if (Input.GetMouseButtonDown(1))
