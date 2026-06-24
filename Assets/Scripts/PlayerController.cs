@@ -29,7 +29,7 @@ public class PlayerController : MonoBehaviour
     {
         joint = gameObject.GetComponent<DistanceJoint2D>();
         joint.enabled = false;
-        AngleVelocity = new Vector3(100, 0, 0);
+        AngleVelocity = new Vector3(0, 1000, 0);
         isSpinning = false;
     }
 
@@ -73,14 +73,14 @@ public class PlayerController : MonoBehaviour
         }
         //"grabbing" the enemy
         if (grabbedObject != null && grabPoint.GetComponent<Collider2D>().IsTouching(grabbedObject.GetComponent<Collider2D>()))
-                {
+        {
                     grabbedObject.GetComponent<Rigidbody2D>().isKinematic = true;
                     grabbedObject.transform.position = grabPoint.transform.position;
                     grabbedObject.transform.SetParent(transform);
                     //this should disable the grapple so the player isn't anchored
                     joint.enabled = false;
                     isSpinning = true;
-                }
+        }
         
             //"let go" of grabbed enemy
         if (Input.GetMouseButtonDown(1))
@@ -91,7 +91,7 @@ public class PlayerController : MonoBehaviour
             isSpinning = false;
         }
     }
-
+/*
     void FixedUpdate()
     {
         //moving the player
@@ -103,4 +103,6 @@ public class PlayerController : MonoBehaviour
             rb.MoveRotation(rb.rotation * deltaRotation);
         }
     }
+    
+    */
 }
