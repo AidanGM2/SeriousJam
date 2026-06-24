@@ -19,6 +19,7 @@ public class PlayerController : MonoBehaviour
     //spinning variables
     Vector3 AngleVelocity;
     bool isSpinning;
+    private float revSpeed = 50f;
 
 
     private Vector3 grapplePoint;
@@ -91,7 +92,7 @@ public class PlayerController : MonoBehaviour
             isSpinning = false;
         }
     }
-/*
+
     void FixedUpdate()
     {
         //moving the player
@@ -99,10 +100,10 @@ public class PlayerController : MonoBehaviour
 
         //the spinning
         if(isSpinning == true){
-            Quaternion deltaRotation = Quaternion.Euler(AngleVelocity * Time.fixedDeltaTime);
-            rb.MoveRotation(rb.rotation * deltaRotation);
+            //Quaternion deltaRotation = Quaternion.Euler(m_EulerAngleVelocity * Time.fixedDeltaTime);
+            rb.MoveRotation(rb.rotation + revSpeed * Time.fixedDeltaTime);
         }
     }
     
-    */
+    
 }
