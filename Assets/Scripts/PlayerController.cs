@@ -16,6 +16,10 @@ public class PlayerController : MonoBehaviour
     [SerializeField] private GameObject grabPoint;
     private GameObject grabbedObject;
 
+    //spinning variables
+    Vector3 AngleVelocity;
+    bool isSpinning;
+
 
     private Vector3 grapplePoint;
     private DistanceJoint2D joint;
@@ -25,6 +29,8 @@ public class PlayerController : MonoBehaviour
     {
         joint = gameObject.GetComponent<DistanceJoint2D>();
         joint.enabled = false;
+        AngleVelocity = new Vector3(100, 0, 0);
+        isSpinning = false;
     }
 
     // Update is called once per frame
@@ -35,17 +41,14 @@ public class PlayerController : MonoBehaviour
         movement.y = Input.GetAxisRaw("Vertical");
 
         //input for player looking at mouse
-        Vector3 mousePos = Input.mousePosition;
-
-        mousePos.z = Mathf.Abs(Camera.main.transform.position.z - transform.position.z);
-
-        mousePos = Camera.main.ScreenToWorldPoint(mousePos);
-
-        Vector2 direction = (mousePos - transform.position);
-
-        float angle = Mathf.Atan2(direction.y, direction.x) * Mathf.Rad2Deg;
-
-        transform.rotation = Quaternion.Euler(0f, 0f, angle - 90f);
+        if(isSpinning == false){
+            Vector3 mousePos = Input.mousePosition;
+            mousePos.z = Mathf.Abs(Camera.main.transform.position.z - transform.position.z);
+            mousePos = Camera.main.ScreenToWorldPoint(mousePos);
+            Vector2 direction = (mousePos - transform.position);
+            float angle = Mathf.Atan2(direction.y, direction.x) * Mathf.Rad2Deg;
+            transform.rotation = Quaternion.Euler(0f, 0f, angle - 90f);
+        }
 
         //grab mechanics
         if (Input.GetMouseButtonDown(0))
@@ -71,12 +74,12 @@ public class PlayerController : MonoBehaviour
         //"grabbing" the enemy
         if (grabbedObject != null && grabPoint.GetComponent<Collider2D>().IsTouching(grabbedObject.GetComponent<Collider2D>()))
                 {
-                    Debug.Log("Object has been grabbed");
                     grabbedObject.GetComponent<Rigidbody2D>().isKinematic = true;
                     grabbedObject.transform.position = grabPoint.transform.position;
                     grabbedObject.transform.SetParent(transform);
                     //this should disable the grapple so the player isn't anchored
                     joint.enabled = false;
+                    isSpinning = true;
                 }
         
             //"let go" of grabbed enemy
@@ -85,6 +88,7 @@ public class PlayerController : MonoBehaviour
             grabbedObject.GetComponent<Rigidbody2D>().isKinematic = false;
             grabbedObject.transform.SetParent(null);
             grabbedObject = null;
+            isSpinning = false;
         }
     }
 
@@ -92,5 +96,11 @@ public class PlayerController : MonoBehaviour
     {
         //moving the player
         rb.MovePosition(rb.position + movement * moveSpeed * Time.fixedDeltaTime);
+
+        //the spinning
+        if(isSpinning == true){
+            Quaternion deltaRotation = Quaternion.Euler(AngleVelocity * Time.fixedDeltaTime);
+            rb.MoveRotation(rb.rotation * deltaRotation);
+        }
     }
 }
