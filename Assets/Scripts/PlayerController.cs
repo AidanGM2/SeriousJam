@@ -70,6 +70,8 @@ public class PlayerController : MonoBehaviour
                 joint.enabled = true;
                 joint.distance = grappleLength;
                 grabbedObject = hit.collider.gameObject;
+                grabbedObject.layer = 0;
+                grabbedObject.GetComponent<EnemyBehavior>().isGrabbed = true;
             }
         }
         //"grabbing" the enemy
@@ -88,8 +90,11 @@ public class PlayerController : MonoBehaviour
         {
             grabbedObject.GetComponent<Rigidbody2D>().isKinematic = false;
             grabbedObject.transform.SetParent(null);
+            grabbedObject.GetComponent<EnemyBehavior>().isGrabbed = false;
+            grabbedObject.layer = 3;
             grabbedObject = null;
             isSpinning = false;
+            revSpeed = 50f;
         }
     }
 
@@ -102,6 +107,10 @@ public class PlayerController : MonoBehaviour
         if(isSpinning == true){
             //Quaternion deltaRotation = Quaternion.Euler(m_EulerAngleVelocity * Time.fixedDeltaTime);
             rb.MoveRotation(rb.rotation + revSpeed * Time.fixedDeltaTime);
+            if(revSpeed <= 750f)
+            {
+                revSpeed += 5f;
+            }
         }
     }
     
