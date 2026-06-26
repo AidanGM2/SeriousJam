@@ -28,6 +28,7 @@ public class EnemyBehavior : MonoBehaviour
     void die()
     {
         //maybe make this fancier later lol
+        ScoreManager.instance.AddPoints();
         Destroy(this.gameObject);
     }
 }
