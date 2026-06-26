@@ -39,6 +39,7 @@ public class StarEnemy : MonoBehaviour
         seeker = GetComponent<Seeker>();
         rb = GetComponent<Rigidbody2D>();
 
+        isGrabbed = false;
         InvokeRepeating("UpdatePath", 0f, 0.5f);
         
     }
