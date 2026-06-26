@@ -30,13 +30,10 @@ public class PlayerAwareness : MonoBehaviour
         if (enemyToPlayerVector.magnitude <= playerAwarenessDistance)
         {
             AwareOfPlayer = true;
-        } 
-        
-        /*
-        else
+        } else
         {
             AwareOfPlayer= false;
         }
-        */
+
     }
 }
