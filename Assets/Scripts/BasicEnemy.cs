@@ -30,7 +30,7 @@ public class BasicEnemy : MonoBehaviour
 
         UpdateTargetDirection();
         RotateTowardsTarget();
-        SetVelocity();
+       // SetVelocity();
 
         /*
         Vector3 direction = player.position - transform.position;
