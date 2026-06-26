@@ -12,10 +12,15 @@ public class StarEnemy : MonoBehaviour
     [SerializeField]
     private float rotationSpeed;
 
+    [SerializeField] float radius;
+    [SerializeField] LayerMask enemies;
+
     Path path;
 
     int currentWaypoint = 0;
     bool reachedEndOfPath = false;
+    public bool isGrabbed;
+
 
     Seeker seeker;
     Rigidbody2D rb;
@@ -66,6 +71,8 @@ public class StarEnemy : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
+        CheckForGrab(); 
+
         Vector2 enemyToPlayerVector = target.position - transform.position;
         DirectionToPlayer = enemyToPlayerVector.normalized;
 
@@ -115,6 +122,26 @@ public class StarEnemy : MonoBehaviour
     private void UpdateTargetDirection()
     {
         targetDirection = DirectionToPlayer;
+    }
+
+
+    private void CheckForGrab()
+    {
+        if (isGrabbed == true)
+        {
+            Collider2D hitEnemy = Physics2D.OverlapCircle(this.transform.position, radius, enemies);
+            if (hitEnemy != null)
+            {
+                hitEnemy.GetComponent<StarEnemy>().Die();
+            }
+        }
+    }
+
+
+    void Die()
+    {
+        ScoreManager.instance.AddPoints();
+        Destroy(this.gameObject);
     }
 
 

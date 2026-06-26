@@ -19,6 +19,8 @@ public class PlayerController : MonoBehaviour
     //spinning variables
     Vector3 AngleVelocity;
     bool isSpinning;
+
+    [SerializeField] bool isHolding;
     private float revSpeed = 50f;
 
 
@@ -28,6 +30,7 @@ public class PlayerController : MonoBehaviour
     // Start is called once before the first execution of Update after the MonoBehaviour is created
     void Start()
     {
+        isHolding = false;
         joint = gameObject.GetComponent<DistanceJoint2D>();
         joint.enabled = false;
         AngleVelocity = new Vector3(0, 1000, 0);
@@ -52,7 +55,7 @@ public class PlayerController : MonoBehaviour
         }
 
         //grab mechanics
-        if (Input.GetMouseButtonDown(0))
+        if (Input.GetMouseButtonDown(0) && isHolding == false)
         {
             RaycastHit2D hit = Physics2D.Raycast(
                 origin: Camera.main.ScreenToWorldPoint(Input.mousePosition),
@@ -71,17 +74,18 @@ public class PlayerController : MonoBehaviour
                 joint.distance = grappleLength;
                 grabbedObject = hit.collider.gameObject;
                 grabbedObject.layer = 0;
-                grabbedObject.GetComponent<EnemyBehavior>().isGrabbed = true;
+                grabbedObject.GetComponent<StarEnemy>().isGrabbed = true;
             }
         }
         //"grabbing" the enemy
-        if (grabbedObject != null && grabPoint.GetComponent<Collider2D>().IsTouching(grabbedObject.GetComponent<Collider2D>()))
+        if (grabbedObject != null && grabPoint.GetComponent<Collider2D>().IsTouching(grabbedObject.GetComponent<Collider2D>()) && isHolding == false)
         {
                     grabbedObject.GetComponent<Rigidbody2D>().isKinematic = true;
                     grabbedObject.transform.position = grabPoint.transform.position;
                     grabbedObject.transform.SetParent(transform);
                     //this should disable the grapple so the player isn't anchored
                     joint.enabled = false;
+                    isHolding = true;
                     isSpinning = true;
         }
         
@@ -90,10 +94,11 @@ public class PlayerController : MonoBehaviour
         {
             grabbedObject.GetComponent<Rigidbody2D>().isKinematic = false;
             grabbedObject.transform.SetParent(null);
-            grabbedObject.GetComponent<EnemyBehavior>().isGrabbed = false;
+            grabbedObject.GetComponent<StarEnemy>().isGrabbed = false;
             grabbedObject.layer = 3;
             grabbedObject = null;
             isSpinning = false;
+            isHolding = false;
             revSpeed = 50f;
         }
     }
