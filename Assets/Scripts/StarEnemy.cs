@@ -6,6 +6,9 @@ public class StarEnemy : MonoBehaviour
 {
 
     public Transform target;
+
+    public Transform slashSpawn;
+
     public float speed = 200f;
     public float nextWaypointDistance = 3f;
 

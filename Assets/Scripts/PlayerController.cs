@@ -5,6 +5,15 @@ using UnityEngine;
 public class PlayerController : MonoBehaviour
 {
 
+
+    [SerializeField] private Color flashColor = Color.red;
+    [SerializeField, Min(0.01f)] private float flashDuration = 0.08f;
+
+    private SpriteRenderer _spriteRenderer;
+    private Color _baseColor;
+    private Coroutine _flashRoutine;
+
+
     //movement variables
     public float moveSpeed = 5f;
     public Rigidbody2D rb;
@@ -26,7 +35,15 @@ public class PlayerController : MonoBehaviour
 
     private Vector3 grapplePoint;
     private DistanceJoint2D joint;
-    
+
+
+    private void Awake()
+    {
+        _spriteRenderer = GetComponent<SpriteRenderer>();
+        _baseColor = _spriteRenderer.color;
+    }
+
+
     // Start is called once before the first execution of Update after the MonoBehaviour is created
     void Start()
     {
@@ -119,5 +136,43 @@ public class PlayerController : MonoBehaviour
         }
     }
     
-    
+
+    public void TakeDamage(int damage)
+    {
+        Debug.Log("Ow");
+        Hit();
+    }
+
+    public void Hit()
+    {
+
+
+        if (!isActiveAndEnabled || _spriteRenderer == null)
+            return;
+
+        if (_flashRoutine != null)
+            StopCoroutine(_flashRoutine);
+
+        _flashRoutine = StartCoroutine(FlashRoutine());
+
+
+
+    }
+
+    private IEnumerator FlashRoutine()
+    {
+        _spriteRenderer.color = flashColor;
+        yield return new WaitForSeconds(flashDuration);
+        _spriteRenderer.color = _baseColor;
+        _flashRoutine = null;
+    }
+
+    private void OnDisable()
+    {
+        if (_spriteRenderer != null)
+            _spriteRenderer.color = _baseColor;
+
+        _flashRoutine = null;
+    }
+
 }
