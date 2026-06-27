@@ -20,6 +20,7 @@ public class EnemyBehavior : MonoBehaviour
             Collider2D hitEnemy = Physics2D.OverlapCircle(this.transform.position, radius, enemies);
             if(hitEnemy != null)
             {
+                Debug.Log("Bruh");
                 hitEnemy.GetComponent<EnemyBehavior>().die();
             }
         }

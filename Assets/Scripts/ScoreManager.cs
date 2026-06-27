@@ -29,4 +29,11 @@ public class ScoreManager : MonoBehaviour
         scoreText.text = score.ToString();
         scoreShadow.text = score.ToString();
     }
+
+    public void LosePoints()
+    {
+        score -= 300;
+        scoreText.text = score.ToString();
+        scoreShadow.text = score.ToString();
+    }
 }
